@@ -1,18 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peer_produce/models/user.dart';
+import 'package:peer_produce/services/database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // create user object based on Firebase User
-  myUser _userFromFirebaseUser(User user) {
+  MyUser _userFromFirebaseUser(User user) {
     return user != null
-        ? myUser(uid: user.uid, isVerified: user.emailVerified)
+        ? MyUser(uid: user.uid, isVerified: user.emailVerified)
         : null;
   }
 
   // auth change user stream
-  Stream<myUser> get user {
+  Stream<MyUser> get user {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
 
@@ -49,6 +50,14 @@ class AuthService {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       _auth.currentUser.sendEmailVerification();
+
+      // create a new doc for the user
+      await DatabaseService(uid: credential.user.uid)
+          .updateUserData('0', 'new member', 100);
+
+      // sign out
+      signOut();
+
       return _userFromFirebaseUser(credential.user);
     } on FirebaseAuthException catch (e) {
       print(e.message.toString());
@@ -67,6 +76,7 @@ class AuthService {
   // send verification email
   void sendVerificationEmail() {
     _auth.currentUser.sendEmailVerification();
+    signOut();
   }
 
   // sign out

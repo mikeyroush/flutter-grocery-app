@@ -83,7 +83,7 @@ class _RegisterState extends State<Register> {
                     setState(() => _loading = true);
                     dynamic result =
                         await _auth.registerWithEmailAndPassword(email, pass);
-                    if (result.runtimeType != myUser) {
+                    if (result.runtimeType != MyUser) {
                       setState(() {
                         error = result;
                         _loading = false;

@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<myUser>(
+    return StreamProvider<MyUser>(
       create: (_) {
         return AuthService().user;
       },

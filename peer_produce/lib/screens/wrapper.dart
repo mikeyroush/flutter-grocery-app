@@ -48,7 +48,7 @@ class _WrapperState extends State<Wrapper> {
     else if (!_initialized)
       return LoadingScreen();
     else {
-      final user = Provider.of<myUser>(context);
+      final user = Provider.of<MyUser>(context);
       return user == null
           ? Authenticate()
           : !user.isVerified ? Verify() : Home();
